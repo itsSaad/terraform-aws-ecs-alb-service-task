@@ -185,10 +185,6 @@ resource "aws_ecs_service" "default" {
   cluster                            = "${var.ecs_cluster_arn}"
   tags                               = "${module.default_label.tags}"
 
-  network_configuration {
-    security_groups = ["${var.security_group_ids}", "${aws_security_group.ecs_service.id}"]
-    subnets         = ["${var.private_subnet_ids}"]
-  }
 
   load_balancer {
     target_group_arn = "${var.alb_target_group_arn}"
