@@ -38,6 +38,7 @@ variable "vpc_id" {
 
 variable "alb_target_group_arn" {
   type        = "string"
+  default     = ""
   description = "The ALB target group ARN for the ECS service"
 }
 
@@ -74,7 +75,7 @@ variable "security_group_ids" {
 variable "launch_type" {
   type        = "string"
   description = "The launch type on which to run your service. Valid values are EC2 and FARGATE"
-  default     = "FARGATE"
+  default     = "EC2"
 }
 
 variable "network_mode" {
@@ -85,12 +86,12 @@ variable "network_mode" {
 
 variable "task_cpu" {
   description = "The number of CPU units used by the task. If using Fargate launch type `task_cpu` must match supported memory values (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#task_size)"
-  default     = 256
+  default     = ""
 }
 
 variable "task_memory" {
   description = "The amount of memory (in MiB) used by the task. If using Fargate launch type `task_memory` must match supported cpu value (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#task_size)"
-  default     = 512
+  default     = ""
 }
 
 variable "desired_count" {
@@ -106,4 +107,13 @@ variable "deployment_maximum_percent" {
 variable "deployment_minimum_healthy_percent" {
   description = "The lower limit (as a percentage of `desired_count`) of the number of tasks that must remain running and healthy in a service during a deployment"
   default     = 100
+}
+
+variable "health_check_grace_period_seconds" {
+  default     = 0
+  description = "health_check_grace_period_seconds alb registration delay"
+}
+
+variable "alb_enabled" {
+  default = "true"
 }

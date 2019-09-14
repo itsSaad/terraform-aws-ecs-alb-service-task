@@ -176,6 +176,7 @@ resource "aws_security_group_rule" "allow_icmp_ingress" {
 }
 
 resource "aws_ecs_service" "default" {
+  count                              = "${var.alb_enabled ? 1 : 0}"
   name                               = "${module.default_label.id}"
   task_definition                    = "${aws_ecs_task_definition.default.family}:${aws_ecs_task_definition.default.revision}"
   desired_count                      = "${var.desired_count}"
@@ -184,13 +185,29 @@ resource "aws_ecs_service" "default" {
   launch_type                        = "${var.launch_type}"
   cluster                            = "${var.ecs_cluster_arn}"
   tags                               = "${module.default_label.tags}"
-
+  health_check_grace_period_seconds  = "${var.health_check_grace_period_seconds}"
 
   load_balancer {
     target_group_arn = "${var.alb_target_group_arn}"
     container_name   = "${var.container_name}"
     container_port   = "${var.container_port}"
   }
+
+  lifecycle {
+    ignore_changes = ["task_definition"]
+  }
+}
+
+resource "aws_ecs_service" "ecs_service_no_alb" {
+  count                              = "${var.alb_enabled ? 0 : 1}"
+  name                               = "${module.default_label.id}"
+  task_definition                    = "${aws_ecs_task_definition.default.family}:${aws_ecs_task_definition.default.revision}"
+  desired_count                      = "${var.desired_count}"
+  deployment_maximum_percent         = "${var.deployment_maximum_percent}"
+  deployment_minimum_healthy_percent = "${var.deployment_minimum_healthy_percent}"
+  launch_type                        = "${var.launch_type}"
+  cluster                            = "${var.ecs_cluster_arn}"
+  tags                               = "${module.default_label.tags}"
 
   lifecycle {
     ignore_changes = ["task_definition"]

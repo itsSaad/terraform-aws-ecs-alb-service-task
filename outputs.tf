@@ -1,6 +1,6 @@
 output "service_name" {
   description = "ECS Service name"
-  value       = "${aws_ecs_service.default.name}"
+  value       = "${element(compact(concat(aws_ecs_service.default.*.name, aws_ecs_service.ecs_service_no_alb.*.name)),0)}"
 }
 
 output "service_role_arn" {
