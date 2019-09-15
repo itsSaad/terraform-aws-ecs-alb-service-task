@@ -117,4 +117,3 @@ variable "health_check_grace_period_seconds" {
 variable "alb_enabled" {
   default = "true"
 }
-
